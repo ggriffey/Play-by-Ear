@@ -42,7 +42,7 @@ function playNote(noteName) {
 const playMelody = (melody) => {
   for (let note of melody) {
     playNote(note);
-    console.log("sleeping between notes");
+    console.log(`playing note ${note}`);
 
     sleep(700);
   }
@@ -55,16 +55,14 @@ const start = () => {
 
   playMelody(sampleMelody);
 
-  inst.textContent = "Play the melody back!";
+  inst.textContent = `Play the melody back! Melody starts on ${sampleMelody[0]}`;
 
-  let testMessage = handleUserResponse();
-  inst.textContent = testMessage;
+  handleUserResponse();
 };
 
 const handleUserResponse = () => {
   let ableToPlay = true;
   let mel = sampleMelody.map((note) => note);
-
   keys.forEach((key) => {
     key.addEventListener("mousedown", () => {
       if (ableToPlay) {
@@ -73,11 +71,11 @@ const handleUserResponse = () => {
           mel.shift();
           if (mel.length === 0) {
             ableToPlay = false;
-            return "You did it!";
+            inst.textContent = "You did it!";
           }
         } else {
           ableToPlay = false;
-          return "incorrect :/";
+          inst.textContent = "incorrect :/";
         }
       }
     });
