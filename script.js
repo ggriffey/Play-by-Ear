@@ -1,3 +1,10 @@
+/* 
+This code implements:
+  - on-screen keyboard functionality
+  - playback of all sound
+    (including melody playback)
+*/
+
 const keys = document.querySelectorAll(".key");
 const whiteKeys = document.querySelectorAll(".key.white");
 const blackKeys = document.querySelectorAll(".key.black");
