@@ -1,7 +1,7 @@
 /* 
-This code implements:
-  - on-screen keyboard functionality
-  - playback of all sound
+script.js features:
+  - implement on-screen keyboard functionality
+  - allow playback of all sound
     (including melody playback)
 */
 
@@ -67,9 +67,9 @@ const start = () => {
   handleUserResponse();
 };
 
-const handleUserResponse = () => {
+const handleUserResponse = (melody) => {
   let ableToPlay = true;
-  let mel = sampleMelody.map((note) => note);
+  let mel = melody.map((note) => note);
   keys.forEach((key) => {
     key.addEventListener("mousedown", () => {
       if (ableToPlay) {
@@ -87,4 +87,15 @@ const handleUserResponse = () => {
       }
     });
   });
+};
+
+const autoMelodyGeneration = () => {
+  let newMelody = generateMelody(4, 1, "C Major");
+  inst.textContent = "Listen to the melody!";
+
+  playMelody(newMelody);
+
+  inst.textContent = `Play the melody back! Melody starts on ${newMelody[0]} and is in C major!`;
+
+  handleUserResponse(newMelody);
 };

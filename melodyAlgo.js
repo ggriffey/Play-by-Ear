@@ -1,6 +1,14 @@
+/*
+melodyAlgo.js features:
+  - allow for internal access of differing scales (ex. major, natural minor)
+  - generate a list of notes from a certain scale
+  - generate melody from a given note and scale
+*/
+
 const NOTES = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"];
 const MAJOR_SCALE_DISTANCES = [1, 3, 5, 6, 8, 10, 12];
 const NATURAL_MINOR_SCALE_DISTANCES = [1, 3, 4, 6, 8, 9, 11];
+const HARMONIC_MINOR_SCALE_DISTANCES = [1, 3, 4, 6, 8, 9, 12];
 
 const getOctave = (letterName) => {
   let newNotes = NOTES.slice(0, NOTES.indexOf(letterName));
@@ -38,9 +46,13 @@ const generateMelody = (len, complexity, key) => {
   // Key should be in form: 'letterName' + ' ' + 'scaleType'
   // ex.                     'Bb major'
   let letterName = key.split(" ")[0];
+  letterName =
+    letterName.length > 1
+      ? letterName[0].toUpperCase() + letterName[1]
+      : letterName[0].toUpperCase();
   let scaleQuality = key.split(" ");
   scaleQuality.shift();
-  let scaleType = scaleQuality.join(" ");
+  let scaleType = scaleQuality.join(" ").toLowerCase();
 
   console.log("let name = " + letterName);
   console.log("scaleType = " + scaleType);
@@ -55,10 +67,8 @@ const generateMelody = (len, complexity, key) => {
       scaleDistances = MAJOR_SCALE_DISTANCES;
   }
 
-  //   console.log(scaleDistances);
-
   let scale = getScale(letterName, scaleDistances);
-  console.log(scale);
+  // console.log(scale);
 
   for (let i = 0; i < len; i++) {
     //For right now, three random notes will be generated within key
@@ -76,4 +86,4 @@ const generateMelody = (len, complexity, key) => {
   return melody;
 };
 
-console.log("melody generated! ... ", generateMelody(3, 1, "Bb natural Minor"));
+// console.log("melody generated! ... ", generateMelody(4, 1, "B majoR"));

@@ -1,10 +1,10 @@
 /* 
-This file:
-  - checks for and adds MIDI functionality
-  - parses MIDI inputs and returns them as the note name and 'on' or 'off'
+midiCtrl.js features:
+  - check for and add MIDI functionality
+  - parse MIDI inputs and returns them as the note name and 'on' or 'off'
 */
 
-const NOTES = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"];
+let notes = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"];
 
 // Check whether browser supports MIDI API
 if (navigator.requestMIDIAccess) {
@@ -37,7 +37,7 @@ function getMIDIMessage(midiMessage) {
 
 const parseNoteNum = (noteNum) => {
   let num = noteNum % 12;
-  return NOTES[num];
+  return notes[num];
 };
 
 // Parse MIDI data and pass to handler functions
