@@ -5,11 +5,20 @@ script.js features:
     (including melody playback)
 */
 
+let json = fetch("./melodiesDB.json").then((response) =>
+  response.json().then((json) => console.log(json))
+);
+
+// FIGURE OUT HOW TO WAIT FOR JSON TO PARSE BEFORE USING IT ^^
+
+// like here...
+// playMelody(json.melodies["1"]); // (currently returns undefined
+// since it doesn't wait for above code to finish)
+
 const keys = document.querySelectorAll(".key");
 const whiteKeys = document.querySelectorAll(".key.white");
 const blackKeys = document.querySelectorAll(".key.black");
 let inst = document.querySelector(".instructions");
-const sampleMelody = ["C", "D", "G"];
 
 inst.innerHTML = "Listen to the melody!";
 
@@ -46,14 +55,14 @@ function playNote(noteName) {
 }
 
 // play a melody from an array of note names (ex. ['C', 'F', 'Bb'])
-const playMelody = (melody) => {
+function playMelody(melody) {
   for (let note of melody) {
     playNote(note);
-    console.log(`playing note ${note}`);
+    // console.log(`playing note ${note}`);
 
     sleep(700);
   }
-};
+}
 
 // initialize page, play sample melody
 const start = () => {
@@ -94,7 +103,6 @@ const autoMelodyGeneration = () => {
   inst.textContent = "Listen to the melody!";
 
   playMelody(newMelody);
-
   inst.textContent = `Play the melody back! Melody starts on ${newMelody[0]} and is in C major!`;
 
   handleUserResponse(newMelody);
