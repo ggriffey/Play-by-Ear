@@ -1,0 +1,26 @@
+{
+  "name": "play-by-ear",
+  "version": "1.0.0",
+  "description": "Play by Ear app",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ggriffey/Play-by-Ear.git"
+  },
+  "author": "Greyson Griffey",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ggriffey/Play-by-Ear/issues"
+  },
+  "homepage": "https://github.com/ggriffey/Play-by-Ear#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "node": "^20.0.0",
+    "nodemon": "^2.0.22",
+    "tone": "^14.7.77"
+  }
+}
