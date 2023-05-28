@@ -21,8 +21,7 @@ body {
   text-align: center;
 }
 
-#sample,
-#random {
+button {
   color: black;
   background-color: aliceblue;
   width: 8%;

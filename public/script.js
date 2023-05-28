@@ -8,45 +8,14 @@ script.js features:
     (implement Tone.js)
 */
 
-// TONE JS CONNECTION/SETUP
-// import * as Tone from "tone";
+let initialized = false;
+let sampler;
 
-// document.getElementById("start-btn")?.addEventListener("click", async () => {
-//   await Tone.start();
-//   console.log("audio is ready");
-// });
-
-//create a synth and connect it to the main output (your speakers)
-// const synth = new Tone.Synth().toDestination();
-
-//play a middle 'C' for the duration of an 8th note
-// synth.triggerAttackRelease("C4", "8n");
-
-// const piano = new Tone.Sampler({
-//   urls: {
-//     C: "./Audio/C.mp3",
-//     Db: "./Audio/Db.mp3",
-//     D: "./Audio/D.mp3",
-//     Eb: "./Audio/Eb.mp3",
-//     E: "./Audio/E.mp3",
-//     F: "./Audio/F.mp3",
-//     Gb: "./Audio/Gb.mp3",
-//     G: "./Audio/G.mp3",
-//     Ab: "./Audio/Ab.mp3",
-//     A: "./Audio/A.mp3",
-//     Bb: "./Audio/Bb.mp3",
-//     B: "./Audio/B.mp3",
-//     C2: "./Audio/C2.mp3",
-//   },
-//   release: 1,
-//   baseUrl: "https://tonejs.github.io/audio/salamander/",
-// }).toDestination();
-
-// Tone.loaded().then(() => {
-//   piano.triggerAttackRelease(["Eb", "G", "Bb"], 4);
-// });
-
-let sampleMelody = ["C", "D", "G"];
+let sampleMelody = [
+  ["C4", 700],
+  ["D4", 700],
+  ["G4", 700],
+];
 
 let json = fetch("./melodiesDB.json").then((response) =>
   response.json().then((json) => console.log(json))
@@ -77,14 +46,10 @@ function sleep(milliseconds) {
 // play the note associated with the given key on the page
 function playNoteFromKey(key) {
   console.log(`playNoteFromKey(${key})`);
-
-  const noteAudio = document.getElementById(key.dataset.note);
-  noteAudio.currentTime = 0;
-  noteAudio.play();
+  sampler.triggerAttackRelease(key.dataset.note, 0.4);
   key.classList.add("active");
-  noteAudio.addEventListener("ended", () => {
-    key.classList.remove("active");
-  });
+  sleep(400);
+  key.classList.remove("active");
 }
 
 // play the note associated with the given note name (C, Db, D)
@@ -92,9 +57,6 @@ function playNote(noteName) {
   console.log(`playNote(${noteName})`);
 
   const key = document.getElementById(noteName);
-  const noteAudio = document.getElementById(noteName);
-  noteAudio.currentTime = 0;
-  noteAudio.play();
   //   key.classList.add("active");
   //   noteAudio.addEventListener("ended", () => {
   //     key.classList.remove("active");
@@ -105,40 +67,88 @@ function playNote(noteName) {
 function playMelody(melody) {
   console.log(`playMelody(${melody})`);
 
-  for (let note of melody) {
-    playNote(note);
-    // console.log(`playing note ${note}`);
+  let time = 0;
+  for (let noteInfo of melody) {
+    sampler.triggerAttackRelease(
+      /* (note, duration, time(to start attack) */
+      noteInfo[0] /* note */,
+      noteInfo[1] / 1000 /* duration */,
+      time
+    );
 
-    sleep(700);
+    time += noteInfo[1] / 1000;
   }
 }
 
+const initialize = () => {
+  async () => {
+    await Tone.start();
+    console.log("audio is ready");
+  };
+
+  sampler = new Tone.Sampler({
+    urls: {
+      C4: "C.mp3",
+      Db4: "Db.mp3",
+      D4: "D.mp3",
+      Eb4: "Eb.mp3",
+      E4: "E.mp3",
+      F4: "F.mp3",
+      Gb4: "Gb.mp3",
+      G4: "G.mp3",
+      Ab4: "Ab.mp3",
+      A4: "A.mp3",
+      Bb4: "Bb.mp3",
+      B4: "B.mp3",
+      C5: "C2.mp3",
+    },
+    release: 1,
+    baseUrl: "/Audio/",
+  }).toDestination();
+
+  Tone.loaded().then(() => {
+    console.log("Tone loaded!");
+  });
+};
+
 // initialize page, play sample melody
 const start = () => {
-  console.log(`start()`);
+  if (!initialized) {
+    initialized = true;
+    initialize();
+  } else {
+    console.log("previously initialized");
+  }
+};
 
+const playSampleMelody = () => {
   inst.textContent = "Listen to the melody!";
   console.log(inst.textContent);
 
   playMelody(sampleMelody);
 
-  inst.textContent = `Play the melody back! Melody starts on ${sampleMelody[0]}`;
+  inst.textContent = `Play the melody back! Melody starts on ${sampleMelody[0][0]}`;
 
   handleUserResponse(sampleMelody);
 };
 
 const handleUserResponse = (melody) => {
-  console.log(`handleUseResponfsdf(${melody})`);
+  console.log(`handleUserResponse(${melody})`);
 
   let ableToPlay = true;
   let mel = melody.map((note) => note);
   console.log(`ml = ${mel}`);
+  console.log(mel);
 
   keys.forEach((key) => {
     key.addEventListener("mousedown", () => {
       if (ableToPlay) {
         playNoteFromKey(key);
-        if (key.dataset.note === mel[0]) {
+        console.log(
+          `key.dataset.note = ${key.dataset.note} and melody = ${mel}`
+        );
+
+        if (key.dataset.note === mel[0][0]) {
           mel.shift();
           if (mel.length === 0) {
             ableToPlay = false;
