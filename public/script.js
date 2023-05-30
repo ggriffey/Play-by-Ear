@@ -1,11 +1,8 @@
-console.log("script is working!");
-
 /* 
 script.js features:
   - implement on-screen keyboard functionality
-  - allow playback of all sound
-    (including melody playback)
-    (implement Tone.js)
+  - allow playback of all sound with Tone.js Sampler
+  - play melodies and handle user responses
 */
 
 let initialized = false;
@@ -41,43 +38,6 @@ function sleep(milliseconds) {
   do {
     currentDate = Date.now();
   } while (currentDate - date < milliseconds);
-}
-
-// play the note associated with the given key on the page
-function playNoteFromKey(key) {
-  console.log(`playNoteFromKey(${key})`);
-  sampler.triggerAttackRelease(key.dataset.note, 0.4);
-  key.classList.add("active");
-  sleep(400);
-  key.classList.remove("active");
-}
-
-// play the note associated with the given note name (C, Db, D)
-function playNote(noteName) {
-  console.log(`playNote(${noteName})`);
-
-  const key = document.getElementById(noteName);
-  //   key.classList.add("active");
-  //   noteAudio.addEventListener("ended", () => {
-  //     key.classList.remove("active");
-  //   });
-}
-
-// play a melody from an array of note names (ex. ['C', 'F', 'Bb'])
-function playMelody(melody) {
-  console.log(`playMelody(${melody})`);
-
-  let time = 0;
-  for (let noteInfo of melody) {
-    sampler.triggerAttackRelease(
-      /* (note, duration, time(to start attack) */
-      noteInfo[0] /* note */,
-      noteInfo[1] / 1000 /* duration */,
-      time
-    );
-
-    time += noteInfo[1] / 1000;
-  }
 }
 
 const initialize = () => {
@@ -121,15 +81,57 @@ const start = () => {
   }
 };
 
-const playSampleMelody = () => {
+// play the note associated with the given key on the page
+function playNoteFromKey(key) {
+  console.log(`playNoteFromKey(${key})`);
+  sampler.releaseAll();
+  sampler.triggerAttack(key.dataset.note);
+  // key.classList.add("active");
+  // sleep(500);
+  // key.classList.remove("active");
+}
+
+// play the note associated with the given note name (C, Db, D)
+function playNote(noteName) {
+  console.log(`playNote(${noteName})`);
+
+  const key = document.getElementById(noteName);
+  //   key.classList.add("active");
+  //   noteAudio.addEventListener("ended", () => {
+  //     key.classList.remove("active");
+  //   });
+}
+
+// play a melody from an array of note names (ex. ['C', 'F', 'Bb'])
+function playMelody(melody) {
   inst.textContent = "Listen to the melody!";
-  console.log(inst.textContent);
+  console.log(`playMelody(${melody})`);
 
+  let time = 0;
+  for (let noteInfo of melody) {
+    sampler.triggerAttackRelease(
+      /* (note, duration, time(to start attack) */
+      noteInfo[0] /* note */,
+      noteInfo[1] / 1000 /* duration */,
+      time
+    );
+
+    time += noteInfo[1] / 1000;
+  }
+  inst.textContent = `Play the melody back! Melody starts on ${melody[0][0]} and is in C major!`;
+}
+
+const playSampleMelody = () => {
   playMelody(sampleMelody);
-
-  inst.textContent = `Play the melody back! Melody starts on ${sampleMelody[0][0]}`;
-
   handleUserResponse(sampleMelody);
+};
+
+const autoMelodyGeneration = () => {
+  let newMelody = generateMelody(4, 1, "C Major");
+  console.log(newMelody);
+
+  playMelody(newMelody);
+  handleUserResponse(newMelody);
 };
 
 const handleUserResponse = (melody) => {
@@ -137,7 +139,7 @@ const handleUserResponse = (melody) => {
 
   let ableToPlay = true;
   let mel = melody.map((note) => note);
-  console.log(`ml = ${mel}`);
+  console.log(`melody:`);
   console.log(mel);
 
   keys.forEach((key) => {
@@ -161,14 +163,4 @@ const handleUserResponse = (melody) => {
       }
     });
   });
-};
-
-const autoMelodyGeneration = () => {
-  let newMelody = generateMelody(4, 1, "C Major");
-  inst.textContent = "Listen to the melody!";
-
-  playMelody(newMelody);
-  inst.textContent = `Play the melody back! Melody starts on ${newMelody[0]} and is in C major!`;
-
-  handleUserResponse(newMelody);
 };

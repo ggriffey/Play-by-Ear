@@ -7,6 +7,7 @@
 body {
   background-color: #143f6b;
   min-height: 100vh;
+  overflow: hidden;
 }
 
 .info {
@@ -16,7 +17,7 @@ body {
 
 .instructions {
   width: 100%;
-  margin: 5% 0 0 0;
+  margin: 3% 0 2% 0;
   color: rgb(251, 250, 242);
   text-align: center;
 }
@@ -25,8 +26,7 @@ button {
   color: black;
   background-color: aliceblue;
   width: 8%;
-  margin: auto;
-  margin-top: 3%;
+  margin: 10px auto;
 }
 
 .piano-container {
@@ -65,4 +65,31 @@ button {
 
 .black.active {
   background-color: #333;
+}
+
+#bottom-link {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: -4rem;
+}
+
+h2 a {
+  color: white;
+}
+
+h2 a:hover {
+  cursor: pointer;
+}
+
+/* RECORD PAGE STYLES */
+
+#btn-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+#btn-container button {
+  margin: 3%;
 }

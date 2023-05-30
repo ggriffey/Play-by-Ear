@@ -1,10 +1,16 @@
-console.log("MeloAlgo Script is working!");
-
 /*
 melodyAlgo.js features:
   - allow for internal access of differing scales (ex. major, natural minor)
   - generate a list of notes from a certain scale
   - generate melody from a given note and scale
+  
+  - TODO: 
+    
+    - Add octave numbering to melodies when generated.
+    Tone.js needs the octave number to play the right 
+    audio
+
+    - disallow duplicate notes back to back
 */
 
 const NOTES = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"];
@@ -75,7 +81,9 @@ const generateMelody = (len, complexity, key) => {
   for (let i = 0; i < len; i++) {
     //For right now, three random notes will be generated within key
     let note = scale[Math.floor(Math.random() * (7 - i))];
-    melody.push(note);
+
+    // in the future, this "4" should be adaptive to the octave number
+    melody.push([note + "4", 500]);
 
     // Need to remove the note from the melody so it doesn't get used again
     // or find a way to make it less likely

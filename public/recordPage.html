@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add Melody</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="script.js" defer></script>
+    <script src="recordMelody.js" defer></script>
+    <script src="midiCtrl.js"></script>
+    <script src="WebMIDIAPI.min.js" defer></script>
+  </head>
+  <body>
+    <div id="btn-container">
+      <button onclick="recordMelody()">Record Melody</button>
+      <button onclick="playRecordedMelody()">Listen Back to Melody</button>
+      <button onclick="addMelodyToDB()">Submit Melody</button>
+    </div>
+  </body>
+</html>
