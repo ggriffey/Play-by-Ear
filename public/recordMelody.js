@@ -1,8 +1,7 @@
 /* 
 recordMelody.js features:
   - record button starts listening for midi data
-  - once the first note is played, the function converts the notes and durations
-  into a melody object
+
   - when the user plays their last note and then clicks listen back or submit, the 
   record function will stop listening for midi data
   
@@ -31,7 +30,7 @@ const recordMelody = () => {
 
   1. Initialize a blank melody array on the click of Record button
   2. Use onmidimessage to add the first note, and simulatenously start a 
-  stopwatch somehow (maybe through Tone.js?) that will take care of duration
+  stopwatch (through Tone.js?) that will take care of duration
   3. When the note is released:
     - if another note is held down, simply move to that note
     - if no notes are playing, add a placeholder note (rest) and the time elapsed before
@@ -60,7 +59,11 @@ const recordMelody = () => {
 };
 
 const playRecordedMelody = () => {
-  /* Simply uses script.js functions to play back the melody stored 
+  /* 
+  For now, all melodies and melody playbacks will be treated monophonically. No harmonic
+  or chordal movements will be allowed, as it makes playback and dealing with note ORDER
+  too nuanced... 
+  Simply uses script.js functions to play back the melody stored 
   in the array from recordMelody 
   
   will use Tone.js time methods like Tone.now() and start()
