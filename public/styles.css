@@ -93,3 +93,14 @@ h2 a:hover {
 #btn-container button {
   margin: 3%;
 }
+
+div#rec-div {
+  height: 45px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+#rec-text {
+  color: white;
+}

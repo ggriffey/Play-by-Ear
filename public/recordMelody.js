@@ -22,6 +22,7 @@ recordMelody.js features:
 const recordButton = document.querySelector(".record-btn");
 const listenButton = document.querySelector(".listen-btn");
 const submitButton = document.querySelector(".submit-btn");
+const recText = document.querySelector("#rec-text");
 
 const recordMelody = () => {
   /* 
@@ -56,6 +57,18 @@ const recordMelody = () => {
     tempMelody.push([{note}, noteDuration ]);
   }
   */
+
+  recText.innerHTML = "Recording...";
+
+  let tempMelody = [];
+
+  // when a note plays:
+  // getMIDIMessage();
+  // start a fresh timer
+  // if another note starts, add the curr note and duration to the melody array
+  // and start a new note timer
+  // if the note is released, add the curr note and duration to the melody
+  // and start a REST duration
 };
 
 const playRecordedMelody = () => {
@@ -68,6 +81,7 @@ const playRecordedMelody = () => {
   
   will use Tone.js time methods like Tone.now() and start()
   */
+  recText.innerHTML = "Playing melody back...";
 };
 
 const addMelodyToDB = () => {
@@ -83,4 +97,5 @@ const addMelodyToDB = () => {
     be able to select melodies randomly, and will have no way of 
     looking for or playing a specific melody.
     */
+  recText.innerHTML = "Melody saved...";
 };

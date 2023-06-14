@@ -18,23 +18,16 @@ if (navigator.requestMIDIAccess) {
 // Establish connection with the MIDI devices
 navigator.requestMIDIAccess().then(onMIDISuccess, onMIDIFailure);
 
-function onMIDISuccess(midiAccess) {
-  console.log(midiAccess);
-}
-
 function onMIDIFailure() {
   console.log("Could not access your MIDI devices.");
 }
 
 // Assign listeners to the MIDI devices (inputs)
 function onMIDISuccess(midiAccess) {
+  console.log(midiAccess);
   for (let input of midiAccess.inputs.values()) {
     input.onmidimessage = getMIDIMessage;
   }
-}
-
-function getMIDIMessage(midiMessage) {
-  console.log(midiMessage);
 }
 
 const parseNoteNum = (noteNum) => {

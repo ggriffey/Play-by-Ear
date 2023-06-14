@@ -164,3 +164,38 @@ const handleUserResponse = (melody) => {
     });
   });
 };
+
+/*
+Handle function for MIDI input instead of on-screen keyboard
+
+const handleUserResponseMIDI = (melody) => {
+  console.log(`handleUserResponseMIDI(${melody})`);
+
+  let ableToPlay = true;
+  let mel = melody.map((note) => note);
+  console.log(`melody:`);
+  console.log(mel);
+
+  keys.forEach((key) => {
+    key.addEventListener("mousedown", () => {
+      if (ableToPlay) {
+        playNoteFromKey(key);
+        console.log(
+          `key.dataset.note = ${key.dataset.note} and melody = ${mel}`
+        );
+
+        if (key.dataset.note === mel[0][0]) {
+          mel.shift();
+          if (mel.length === 0) {
+            ableToPlay = false;
+            inst.textContent = "You did it!";
+          }
+        } else {
+          ableToPlay = false;
+          inst.textContent = "incorrect :/";
+        }
+      }
+    });
+  });
+};
+*/
