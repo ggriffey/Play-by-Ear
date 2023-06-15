@@ -31,8 +31,8 @@ function onMIDISuccess(midiAccess) {
 }
 
 const parseNoteNum = (noteNum) => {
-  let num = noteNum % 12;
-  return notes[num];
+  let note = notes[noteNum % 12];
+  return note + Math.floor(noteNum / 12 - 1);
 };
 
 // Parse MIDI data and pass to handler functions

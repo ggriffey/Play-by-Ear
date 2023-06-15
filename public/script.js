@@ -14,9 +14,9 @@ let sampleMelody = [
   ["G4", 700],
 ];
 
-let json = fetch("./melodiesDB.json").then((response) =>
-  response.json().then((json) => console.log(json))
-);
+// let json = fetch("./melodiesDB.json").then((response) =>
+//   response.json().then((json) => console.log(json))
+// );
 
 // FIGURE OUT HOW TO WAIT FOR JSON TO PARSE BEFORE USING IT ^^
 
@@ -29,7 +29,9 @@ const whiteKeys = document.querySelectorAll(".key.white");
 const blackKeys = document.querySelectorAll(".key.black");
 let inst = document.querySelector(".instructions");
 
-inst.innerHTML = "Listen to the melody!";
+if (inst != undefined) {
+  inst.innerHTML = "Listen to the melody!";
+}
 
 // unnecessary sleep function I should remove after I figure out a better way of doing this
 function sleep(milliseconds) {
@@ -40,7 +42,7 @@ function sleep(milliseconds) {
   } while (currentDate - date < milliseconds);
 }
 
-const initialize = () => {
+const initializeToneJS = () => {
   async () => {
     await Tone.start();
     console.log("audio is ready");
@@ -69,13 +71,15 @@ const initialize = () => {
   Tone.loaded().then(() => {
     console.log("Tone loaded!");
   });
+
+  return sampler;
 };
 
 // initialize page, play sample melody
 const start = () => {
   if (!initialized) {
     initialized = true;
-    initialize();
+    initializeToneJS();
   } else {
     console.log("previously initialized");
   }
@@ -91,21 +95,19 @@ function playNoteFromKey(key) {
   // key.classList.remove("active");
 }
 
-// play the note associated with the given note name (C, Db, D)
+// play the note associated with the given note name (C4, Db6, D2)
 function playNote(noteName) {
-  console.log(`playNote(${noteName})`);
-
-  const key = document.getElementById(noteName);
-  //   key.classList.add("active");
-  //   noteAudio.addEventListener("ended", () => {
-  //     key.classList.remove("active");
-  //   });
+  sampler.triggerAttack(noteName);
 }
 
-// play a melody from an array of note names (ex. ['C', 'F', 'Bb'])
+// play a melody from an array of note names AND durations
+//(ex. ["C4", 700], ["D4", 700], ["G4", 700],)
 function playMelody(melody) {
-  inst.textContent = "Listen to the melody!";
-  console.log(`playMelody(${melody})`);
+  if (inst != undefined) {
+    inst.textContent = "Listen to the melody!";
+  }
+
+  sampler.releaseAll();
 
   let time = 0;
   for (let noteInfo of melody) {
@@ -115,10 +117,31 @@ function playMelody(melody) {
       noteInfo[1] / 1000 /* duration */,
       time
     );
-
     time += noteInfo[1] / 1000;
   }
-  inst.textContent = `Play the melody back! Melody starts on ${melody[0][0]} and is in C major!`;
+  if (inst != undefined) {
+    inst.textContent = `Play the melody back! Melody starts on ${melody[0][0]} and is in C major!`;
+  }
+}
+
+// play a melody from an array of note names (NO durations) (ex. ['C4', 'F4', 'Bb4'])
+function playMelodyWithoutDuration(melody) {
+  sampler.releaseAll();
+  let time = Tone.now();
+  let duration = 0.6;
+
+  sleep(100);
+
+  for (let note of melody) {
+    console.log(note);
+    sampler.triggerAttackRelease(
+      /* (note, duration, time(to start attack) */
+      note,
+      Number(duration),
+      time
+    );
+    time += Number(duration);
+  }
 }
 
 const playSampleMelody = () => {
