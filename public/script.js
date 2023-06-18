@@ -80,7 +80,6 @@ const start = () => {
   if (!initialized) {
     initialized = true;
     initializeToneJS();
-    transportTest(); //UNNCESESARY
   } else {
     console.log("previously initialized");
   }

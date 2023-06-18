@@ -97,5 +97,8 @@ const recordMelody = () => {
 
 const playRecordedMelody = () => {
   console.log("tempmelody = " + tempMelody);
-  playMelodyWithoutDuration(tempMelody);
+  if (tempMelody != undefined && tempMelody.length != 0) {
+    playMelodyWithoutDuration(tempMelody);
+  }
+  transportTest();
 };

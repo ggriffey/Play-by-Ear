@@ -1,5 +1,3 @@
-console.log("transport test in progress");
-
 function sleep(milliseconds) {
   const date = Date.now();
   let currentDate = null;
@@ -9,9 +7,15 @@ function sleep(milliseconds) {
 }
 
 function transportTest() {
-  Tone.Transport.start();
-  console.log(Tone.Transport.now());
-  sleep(500);
+  console.log("transport test in progress");
+  Tone.start();
+  console.log(Tone.now());
+  console.log("sleeping for 3 seconds");
+
+  sleep(3000);
+  console.log("slept for 3 seconds");
+
+  console.log(Tone.now());
 }
 
 function playWithDuration() {
