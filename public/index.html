@@ -12,14 +12,15 @@
     <script src="melodyAlgo.js" defer></script>
     <script src="WebMIDIAPI.min.js"></script>
     <!-- ^^ polyfill, so browsers other than chrome can run the app -->
-    <script src="transportTest.js" defer></script>
     <title>Play By Ear</title>
   </head>
   <body>
     <div class="info">
       <h1 class="instructions"></h1>
       <button id="initialize" onclick="start()">Init</button>
-      <button id="sample" onclick="playSampleMelody()">Sample Melody</button>
+      <button id="sample" onclick="playMelody(sampleMelody)">
+        Sample Melody
+      </button>
       <button id="random" onclick="autoMelodyGeneration()">
         Random Melody
       </button>

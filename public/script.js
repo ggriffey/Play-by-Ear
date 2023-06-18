@@ -9,9 +9,9 @@ let initialized = false;
 let sampler;
 
 let sampleMelody = [
-  ["C4", 700],
-  ["D4", 700],
-  ["G4", 700],
+  ["C4", 0.7],
+  ["D4", 0.7],
+  ["G4", 0.7],
 ];
 
 // let json = fetch("./melodiesDB.json").then((response) =>
@@ -101,7 +101,7 @@ function playNote(noteName) {
 }
 
 // play a melody from an array of note names AND durations
-//(ex. ["C4", 700], ["D4", 700], ["G4", 700],)
+//(ex. [[["C4", 0.7], ["D4", 0.7], ["G4", 0.7]])
 function playMelody(melody) {
   if (inst != undefined) {
     inst.textContent = "Listen to the melody!";
@@ -111,13 +111,21 @@ function playMelody(melody) {
 
   let time = 0;
   for (let noteInfo of melody) {
-    sampler.triggerAttackRelease(
-      /* (note, duration, time(to start attack) */
-      noteInfo[0] /* note */,
-      noteInfo[1] / 1000 /* duration */,
-      time
-    );
-    time += noteInfo[1] / 1000;
+    if (noteInfo[0] === "REST") {
+      // console.log("rest " + noteInfo[1] + " s");
+
+      sleep(noteInfo[1] * 1000);
+    } else {
+      console.log(`${noteInfo[0]} for ${noteInfo[1].toFixed(2)}s`);
+
+      sampler.triggerAttackRelease(
+        /* (note, duration, time(to start attack) */
+        noteInfo[0] /* note */,
+        noteInfo[1] /* duration in seconds */,
+        time
+      );
+      time += noteInfo[1];
+    }
   }
   if (inst != undefined) {
     inst.textContent = `Play the melody back! Melody starts on ${melody[0][0]} and is in C major!`;

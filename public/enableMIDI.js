@@ -51,38 +51,47 @@ function enableMidiDevice(/* params? */) {
   // Initialize ToneJS access
   let sampler = initializeToneJS();
 
+  // initialize note start times
+  let prevNoteStartTime;
+  let currNoteStartTime = 0;
+
   // Parse MIDI data and pass to handler functions
   function getMIDIMessage(message) {
+    // console.log("getMIDIMessage is being called");
+
     let command = message.data[0];
+    let noteNum;
+    let velocity;
+    let note;
+    let noteOn;
+
     if (command != 248 && command != 254) {
-      // console.log(`commnd = ${command}`);
+      // console.log("command not 248 or 254");
+
+      noteNum = message.data[1];
+      velocity = message.data.length > 2 ? message.data[2] : 0;
+      // a velocity value might not be included with a noteOff command
+      note = parseNoteNum(noteNum);
+      noteOn = false;
     }
-
-    let noteNum = message.data[1];
-    let velocity = message.data.length > 2 ? message.data[2] : 0;
-    // a velocity value might not be included with a noteOff command
-    let note = parseNoteNum(noteNum);
-    let noteOn = false;
-
-    let prevNoteStartTime;
-    let currNoteStartTime = 0;
 
     switch (command) {
       case 144:
-        console.log(currNoteStartTime);
-
         prevNoteStartTime = currNoteStartTime;
 
         let tempNoteInfo;
         // New note is being played:
         if (velocity > 0) {
           // console.log(note);
-          if (prevNoteStartTime > 0) {
-            console.log(`prevTime =  ${prevNoteStartTime}`);
-            // At least 1 note already played. Update the prev duration
-            tempMelody[tempMelody.length - 2][1] = (
-              Tone.now() - prevNoteStartTime
-            ).toFixed(2);
+          currNoteStartTime = Tone.now();
+          if (tempMelody.length > 0) {
+            // At least 1 note already played
+            // if duration is NOT already set
+            console.log("setting prev duration");
+            if (typeof (tempMelody[tempMelody.length - 1][1] != Number)) {
+              tempMelody[tempMelody.length - 1][1] =
+                Tone.now() - prevNoteStartTime;
+            }
           } else {
             // First note of the melody
             Tone.start();
@@ -90,18 +99,14 @@ function enableMidiDevice(/* params? */) {
           // Create a new noteInfo with a placeholder duration
           tempNoteInfo = [note, "duration"];
 
-          // set currNoteStartTime
-          currNoteStartTime = Tone.now();
-          // console.log("now = " + Tone.now());
-
           console.log(`${note} at ${currNoteStartTime.toFixed(2)}`);
           noteOn = true;
           sampler.releaseAll();
           playNote(note);
           tempMelody.push(tempNoteInfo);
           notesRinging.push(note);
-          console.log(tempMelody);
 
+          console.log(tempMelody);
           return [note, noteOn];
         } else {
           // velocity = 0 still gives a MIDI number of 144
@@ -124,17 +129,21 @@ function enableMidiDevice(/* params? */) {
           //   tempMelody[tempMelody.length - 2][1] =
           //     Tone.now() - prevNoteStartTime; // now - prevTime = duration
           // }
+
+          // Note is released
           if (velocity === 0) {
+            sampler.releaseAll();
             notesRinging.pop();
             // no other notes are playing
             if (notesRinging.length === 0) {
               // console.log("No notes are ringing");
+              currNoteStartTime = Tone.now();
               // update the CURRENT note duration
+              console.log("setting current duration");
               tempMelody[tempMelody.length - 1][1] =
                 Tone.now() - prevNoteStartTime; // now - prevTime = duration
               // add a rest with a duration placeholder
               tempMelody.push(["REST", "duration"]);
-              currNoteStartTime = Tone.now();
             }
           }
           console.log(tempMelody);
@@ -161,6 +170,7 @@ function enableMidiDevice(/* params? */) {
         return [note, noteOn];
     }
   }
+  return sampler;
 }
 
 const recordMelody = () => {
@@ -170,7 +180,7 @@ const recordMelody = () => {
 const playRecordedMelody = () => {
   console.log("tempmelody = " + tempMelody);
   if (tempMelody != undefined && tempMelody.length != 0) {
-    playMelodyWithoutDuration(tempMelody);
+    console.log("calling playMelody");
+    playMelody(tempMelody);
   }
-  // transportTest(); // UNNECESSARY
 };
