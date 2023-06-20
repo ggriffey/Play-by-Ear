@@ -27,10 +27,10 @@ let sampleMelody = [
 const keys = document.querySelectorAll(".key");
 const whiteKeys = document.querySelectorAll(".key.white");
 const blackKeys = document.querySelectorAll(".key.black");
-let inst = document.querySelector(".instructions");
+let title = document.querySelector(".title");
 
-if (inst != undefined) {
-  inst.innerHTML = "Listen to the melody!";
+if (title != undefined) {
+  title.innerHTML = "Listen to the melody!";
 }
 
 // unnecessary sleep function I should remove after I figure out a better way of doing this
@@ -103,8 +103,8 @@ function playNote(noteName) {
 // play a melody from an array of note names AND durations
 //(ex. [[["C4", 0.7], ["D4", 0.7], ["G4", 0.7]])
 function playMelody(melody) {
-  if (inst != undefined) {
-    inst.textContent = "Listen to the melody!";
+  if (title != undefined) {
+    title.textContent = "Listen to the melody!";
   }
 
   sampler.releaseAll();
@@ -127,8 +127,8 @@ function playMelody(melody) {
       time += noteInfo[1];
     }
   }
-  if (inst != undefined) {
-    inst.textContent = `Play the melody back! Melody starts on ${melody[0][0]} and is in C major!`;
+  if (title != undefined) {
+    title.textContent = `Play the melody back! Melody starts on ${melody[0][0]} and is in C major!`;
   }
 }
 
@@ -185,11 +185,11 @@ const handleUserResponse = (melody) => {
           mel.shift();
           if (mel.length === 0) {
             ableToPlay = false;
-            inst.textContent = "You did it!";
+            title.textContent = "You did it!";
           }
         } else {
           ableToPlay = false;
-          inst.textContent = "incorrect :/";
+          title.textContent = "incorrect :/";
         }
       }
     });
@@ -219,11 +219,11 @@ const handleUserResponseMIDI = (melody) => {
           mel.shift();
           if (mel.length === 0) {
             ableToPlay = false;
-            inst.textContent = "You did it!";
+            title.textContent = "You did it!";
           }
         } else {
           ableToPlay = false;
-          inst.textContent = "incorrect :/";
+          title.textContent = "incorrect :/";
         }
       }
     });

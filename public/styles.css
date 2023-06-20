@@ -15,11 +15,18 @@ body {
   flex-direction: column;
 }
 
-.instructions {
+.title {
   width: 100%;
   margin: 3% 0 2% 0;
-  color: rgb(251, 250, 242);
+  color: rgb(255, 255, 255);
+  text-shadow: 2px 2px 2px #a2bedf;
   text-align: center;
+}
+
+#title-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 button {
@@ -27,6 +34,13 @@ button {
   background-color: aliceblue;
   width: 8%;
   margin: 10px auto;
+  padding: 0.25%;
+  border: none;
+  border-radius: 5px;
+}
+
+button:hover {
+  cursor: pointer;
 }
 
 .piano-container {

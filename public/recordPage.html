@@ -7,14 +7,15 @@
     <title>Add Melody</title>
     <link rel="stylesheet" href="styles.css" />
     <script src="http://unpkg.com/tone"></script>
-    <script src="enableMIDI.js"></script>
+    <script src="recordMelody.js" defer></script>
     <script src="script.js" defer></script>
-    <!-- <script src="recordMelody.js" defer></script> -->
     <!-- <script src="midiCtrl.js"></script> -->
     <script src="WebMIDIAPI.min.js" defer></script>
-    <!-- <script src="transportTest.js" defer></script> -->
   </head>
   <body>
+    <div id="title-container">
+      <h1 class="title">Record a Melody</h1>
+    </div>
     <div id="btn-container">
       <button id="record-btn" onclick="recordMelody()">Record Melody</button>
       <button id="listen-btn" onclick="playRecordedMelody()">

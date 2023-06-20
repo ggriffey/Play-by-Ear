@@ -22,66 +22,190 @@ recordMelody.js features:
 const recordButton = document.querySelector(".record-btn");
 const listenButton = document.querySelector(".listen-btn");
 const submitButton = document.querySelector(".submit-btn");
-const recText = document.querySelector("#rec-text");
+let recTitle = document.querySelector(".title");
 
+let tempMelody;
+let notesRinging = [];
+
+// Allows user to play any notes in any order with their connected device.
+// Returns an array of the notes and durations
 const recordMelody = () => {
   /* 
+  - Stops listening when either of the other two buttons are pressed
+  - Discard the inevitable rest at the end of the melody
+*/
 
-  this will be the hardest function of the three on this page..
+  // initialize tempMelody & notesRinging
+  tempMelody = [];
+  notesRinging = [];
 
-  1. Initialize a blank melody array on the click of Record button
-  2. Use onmidimessage to add the first note, and simulatenously start a 
-  stopwatch (through Tone.js?) that will take care of duration
-  3. When the note is released:
-    - if another note is held down, simply move to that note
-    - if no notes are playing, add a placeholder note (rest) and the time elapsed before
-    either a) the next note is pressed or b) the Listen button is pressed
-  4. Stops listening when either of the other two buttons are pressed
-    - Discard the inevitable rest at the end of the melody
-  
-  Maybe this function should return the array
-  
-  */
-  /*
-  1st attempt semi-pseudo:
-
-  let tempMelody = []
-  
-  onmidimessage([start of note]) => { HERE: need to check if there are other notes playing
-    let noteDuration;               if so, need a way to add the right notes in right order
-    let noteStartTime = Tone.now() 
-    
-    onmidimessage([end of note]) => {
-      noteDuration = Tone.now() - noteStartTime;
-    }
-    tempMelody.push([{note}, noteDuration ]);
+  // Check whether browser supports MIDI API
+  if (navigator.requestMIDIAccess) {
+    console.log("This browser supports WebMIDI!");
+  } else {
+    console.log("WebMIDI is not supported in this browser.");
   }
-  */
 
-  recText.innerHTML = "Recording...";
+  // Establish connection with the MIDI devices
+  navigator.requestMIDIAccess().then(onMIDISuccess, onMIDIFailure);
 
-  let tempMelody = [];
+  function onMIDIFailure() {
+    console.log("Could not access your MIDI devices.");
+  }
 
-  // when a note plays:
-  // getMIDIMessage();
-  // start a fresh timer
-  // if another note starts, add the curr note and duration to the melody array
-  // and start a new note timer
-  // if the note is released, add the curr note and duration to the melody
-  // and start a REST duration
+  // Assign listeners to the MIDI devices (inputs)
+  function onMIDISuccess(midiAccess) {
+    // console.log(midiAccess);
+    for (let input of midiAccess.inputs.values()) {
+      input.onmidimessage = getMIDIMessage;
+    }
+  }
+
+  let notes = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"];
+
+  const parseNoteNum = (noteNum) => {
+    let note = notes[noteNum % 12];
+    return note + Math.floor(noteNum / 12 - 1);
+  };
+
+  // Initialize ToneJS access
+  let sampler = initializeToneJS();
+
+  // initialize note start times
+  let prevNoteStartTime;
+  let currNoteStartTime = 0;
+  recTitle.innerHTML = "Recording...";
+
+  // Parse MIDI data and pass to handler functions
+  function getMIDIMessage(message) {
+    // console.log("getMIDIMessage is being called");
+
+    let command = message.data[0];
+    let noteNum;
+    let velocity;
+    let note;
+    let noteOn;
+
+    if (command != 248 && command != 254) {
+      // console.log("command not 248 or 254");
+
+      noteNum = message.data[1];
+      velocity = message.data.length > 2 ? message.data[2] : 0;
+      // a velocity value might not be included with a noteOff command
+      note = parseNoteNum(noteNum);
+      noteOn = false;
+    }
+
+    switch (command) {
+      case 144:
+        prevNoteStartTime = currNoteStartTime;
+
+        let tempNoteInfo;
+        // New note is being played:
+        if (velocity > 0) {
+          // console.log(note);
+          currNoteStartTime = Tone.now();
+          if (tempMelody.length > 0) {
+            // At least 1 note already played
+            // if duration is NOT already set
+            console.log("setting prev duration");
+            if (typeof (tempMelody[tempMelody.length - 1][1] != Number)) {
+              tempMelody[tempMelody.length - 1][1] =
+                Tone.now() - prevNoteStartTime;
+            }
+          } else {
+            // First note of the melody
+            Tone.start();
+          }
+          // Create a new noteInfo with a placeholder duration
+          tempNoteInfo = [note, "duration"];
+
+          console.log(`${note} at ${currNoteStartTime.toFixed(2)}`);
+          noteOn = true;
+          sampler.releaseAll();
+          playNote(note);
+          tempMelody.push(tempNoteInfo);
+          notesRinging.push(note);
+
+          console.log(tempMelody);
+          return [note, noteOn];
+        } else {
+          // velocity = 0 still gives a MIDI number of 144
+          /* "A velocity of 0 is sometimes used in conjunction with a command 
+          value of 144 (which typically represents “note on”) to indicate a “note off” 
+          message, so it’s helpful to check if the given velocity is 0 as an alternate 
+          way of interpreting a “note off” message." */
+
+          // console.log(note);
+          // console.log(`${notesRinging.length}`);
+          console.log(`${note} at ${Tone.now().toFixed(2)}`);
+
+          noteOn = false;
+          /* NOT SURE IF I ACTUALLY NEED THIS CODE:*/
+          // Update duration of PREVIOUS note
+          // if (tempMelody.length > 1) {
+          //   console.log("tempMel length > 1");
+          //   console.log(`now ${Tone.now()} - prevTime (${prevNoteStartTime}):`);
+          //   console.log((Tone.now() - prevNoteStartTime).toFixed(2));
+          //   tempMelody[tempMelody.length - 2][1] =
+          //     Tone.now() - prevNoteStartTime; // now - prevTime = duration
+          // }
+
+          // Note is released
+          if (velocity === 0) {
+            sampler.releaseAll();
+            notesRinging.pop();
+            // no other notes are playing
+            if (notesRinging.length === 0) {
+              // console.log("No notes are ringing");
+              currNoteStartTime = Tone.now();
+              // update the CURRENT note duration
+              console.log("setting current duration");
+              tempMelody[tempMelody.length - 1][1] =
+                Tone.now() - prevNoteStartTime; // now - prevTime = duration
+              // add a rest with a duration placeholder
+              tempMelody.push(["REST", "duration"]);
+            }
+          }
+          console.log(tempMelody);
+          return [note, noteOn];
+        }
+
+      case 128: // noteOff
+        // DUPLICATE CODE FROM DIRECTLY ABOVE (less edited version here (older))
+        console.log(`ringing = ${notesRinging}`);
+        noteOn = false;
+        if (notesRinging.length === 0) {
+          tempMelody.push("REST");
+          // Update duration of previous note
+          tempMelody[tempMelody.length - 2][1] = Tone.now();
+          console.log(`tempMelody = ${tempMelody}`);
+        } else {
+          /* remove a note from notesRinging
+             NOTE: it does NOT matter which note we remove. It only matters that 
+             their is either sound (at least one note) or none at all */
+          notesRinging.pop();
+          console.log(`tempMelody = ${tempMelody}`);
+        }
+        console.log(`${note} note off`);
+        return [note, noteOn];
+    }
+  }
+  return sampler;
 };
 
 const playRecordedMelody = () => {
   /* 
-  For now, all melodies and melody playbacks will be treated monophonically. No harmonic
-  or chordal movements will be allowed, as it makes playback and dealing with note ORDER
-  too nuanced... 
-  Simply uses script.js functions to play back the melody stored 
-  in the array from recordMelody 
-  
-  will use Tone.js time methods like Tone.now() and start()
+  Uses script.js functions to play the melody stored from recordMelody function
   */
-  recText.innerHTML = "Playing melody back...";
+  recTitle.innerHTML = "Melody saved. Playing recording...";
+  console.log("tempmelody = " + tempMelody);
+  if (tempMelody != undefined && tempMelody.length != 0) {
+    console.log("calling playMelody");
+    playMelody(tempMelody);
+  } else {
+    recTitle.innerHTML = "Melody not found. Please record a melody first!";
+  }
 };
 
 const addMelodyToDB = () => {
@@ -97,5 +221,5 @@ const addMelodyToDB = () => {
     be able to select melodies randomly, and will have no way of 
     looking for or playing a specific melody.
     */
-  recText.innerHTML = "Melody saved...";
+  recTitle.innerHTML = "Melody submitted...";
 };
