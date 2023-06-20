@@ -85,14 +85,25 @@ const start = () => {
   }
 };
 
+let ableToPlay;
+function allowPianoUsage() {
+  ableToPlay = true;
+  keys.forEach((key) => key.classList.add("ableToPlay"));
+}
+
+function disallowPianoUsage() {
+  ableToPlay = false;
+  keys.forEach((key) => key.classList.remove("ableToPlay"));
+}
+
 // play the note associated with the given key on the page
 function playNoteFromKey(key) {
   console.log(`playNoteFromKey(${key})`);
   sampler.releaseAll();
   sampler.triggerAttack(key.dataset.note);
-  // key.classList.add("active");
-  // sleep(500);
-  // key.classList.remove("active");
+  key.classList.add("active");
+  sleep(500);
+  key.classList.remove("active");
 }
 
 // play the note associated with the given note name (C4, Db6, D2)
@@ -103,13 +114,15 @@ function playNote(noteName) {
 // play a melody from an array of note names AND durations
 //(ex. [[["C4", 0.7], ["D4", 0.7], ["G4", 0.7]])
 function playMelody(melody) {
+  console.log("melody = " + Array.prototype.toString(melody));
+
   if (title != undefined) {
     title.textContent = "Listen to the melody!";
   }
 
   sampler.releaseAll();
 
-  let time = 0;
+  let time = 0.2;
   for (let noteInfo of melody) {
     if (noteInfo[0] === "REST") {
       // console.log("rest " + noteInfo[1] + " s");
@@ -130,6 +143,7 @@ function playMelody(melody) {
   if (title != undefined) {
     title.textContent = `Play the melody back! Melody starts on ${melody[0][0]} and is in C major!`;
   }
+  console.log("played entire melody");
 }
 
 // play a melody from an array of note names (NO durations) (ex. ['C4', 'F4', 'Bb4'])
@@ -166,9 +180,9 @@ const autoMelodyGeneration = () => {
 };
 
 const handleUserResponse = (melody) => {
-  console.log(`handleUserResponse(${melody})`);
+  // console.log(`handleUserResponse(${melody})`);
 
-  let ableToPlay = true;
+  allowPianoUsage();
   let mel = melody.map((note) => note);
   console.log(`melody:`);
   console.log(mel);
@@ -177,19 +191,27 @@ const handleUserResponse = (melody) => {
     key.addEventListener("mousedown", () => {
       if (ableToPlay) {
         playNoteFromKey(key);
-        console.log(
-          `key.dataset.note = ${key.dataset.note} and melody = ${mel}`
-        );
+        // console.log(
+        //   `key.dataset.note = ${key.dataset.note} and melody = ${mel}`
+        // );
 
         if (key.dataset.note === mel[0][0]) {
           mel.shift();
           if (mel.length === 0) {
             ableToPlay = false;
             title.textContent = "You did it!";
+            disallowPianoUsage();
+            console.log(
+              `local mel variable: ${mel}, and global melody variable (passed in) as ${melody}`
+            );
           }
         } else {
           ableToPlay = false;
           title.textContent = "incorrect :/";
+          disallowPianoUsage();
+          console.log(
+            `local mel variable: ${mel}, and global melody variable (passed in) as ${melody}`
+          );
         }
       }
     });

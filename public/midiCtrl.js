@@ -1,4 +1,4 @@
-console.log("MidiCtrl Script is working!");
+// console.log("MidiCtrl Script is working!");
 
 /* 
 midiCtrl.js features:
@@ -10,9 +10,9 @@ let notes = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"];
 
 // Check whether browser supports MIDI API
 if (navigator.requestMIDIAccess) {
-  console.log("This browser supports WebMIDI!");
+  // console.log("This browser supports WebMIDI!");
 } else {
-  console.log("WebMIDI is not supported in this browser.");
+  // console.log("WebMIDI is not supported in this browser.");
 }
 
 // Establish connection with the MIDI devices
@@ -24,7 +24,7 @@ function onMIDIFailure() {
 
 // Assign listeners to the MIDI devices (inputs)
 function onMIDISuccess(midiAccess) {
-  console.log(midiAccess);
+  // console.log(midiAccess);
   for (let input of midiAccess.inputs.values()) {
     input.onmidimessage = getMIDIMessage;
   }

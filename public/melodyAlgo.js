@@ -83,7 +83,7 @@ const generateMelody = (len, complexity, key) => {
     let note = scale[Math.floor(Math.random() * (7 - i))];
 
     // in the future, this "4" should be adaptive to the octave number
-    melody.push([note + "4", 500]);
+    melody.push([note + "4", 0.5]);
 
     // Need to remove the note from the melody so it doesn't get used again
     // or find a way to make it less likely

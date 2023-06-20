@@ -81,6 +81,10 @@ button:hover {
   background-color: #333;
 }
 
+.ableToPlay {
+  cursor: pointer;
+}
+
 #bottom-link {
   width: 100%;
   display: flex;
