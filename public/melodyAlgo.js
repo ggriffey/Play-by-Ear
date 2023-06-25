@@ -62,8 +62,8 @@ const generateMelody = (len, complexity, key) => {
   scaleQuality.shift();
   let scaleType = scaleQuality.join(" ").toLowerCase();
 
-  console.log("let name = " + letterName);
-  console.log("scaleType = " + scaleType);
+  // console.log("letter name = " + letterName);
+  // console.log("scaleType = " + scaleType);
 
   let melody = [];
   let scaleDistances;

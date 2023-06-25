@@ -5,6 +5,9 @@ script.js features:
   - play melodies and handle user responses
 */
 
+const randomButton = document.getElementById("random");
+const sampleButton = document.getElementById("sample");
+
 let initialized = false;
 let sampler;
 
@@ -114,7 +117,7 @@ function playNote(noteName) {
 // play a melody from an array of note names AND durations
 //(ex. [[["C4", 0.7], ["D4", 0.7], ["G4", 0.7]])
 function playMelody(melody) {
-  console.log("melody = " + Array.prototype.toString(melody));
+  // console.log("melody = " + Array.prototype.toString(melody));
 
   if (title != undefined) {
     title.textContent = "Listen to the melody!";
@@ -180,12 +183,12 @@ const autoMelodyGeneration = () => {
 };
 
 const handleUserResponse = (melody) => {
-  // console.log(`handleUserResponse(${melody})`);
-
+  console.log(`handleUserResponse(${melody})`);
+  let buttons = [sample, random];
   allowPianoUsage();
   let mel = melody.map((note) => note);
-  console.log(`melody:`);
-  console.log(mel);
+  // console.log(`melody:`);
+  // console.log(mel);
 
   keys.forEach((key) => {
     key.addEventListener("mousedown", () => {
@@ -214,6 +217,14 @@ const handleUserResponse = (melody) => {
           );
         }
       }
+    });
+  });
+
+  buttons.forEach((button) => {
+    button.addEventListener("click", () => {
+      console.log("button clicked. ending handler function now");
+      disallowPianoUsage();
+      return;
     });
   });
 };
