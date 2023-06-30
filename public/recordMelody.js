@@ -108,7 +108,7 @@ const recordMelody = () => {
           if (tempMelody.length > 0) {
             // At least 1 note already played
             // if duration is NOT already set
-            console.log("setting prev duration");
+            // console.log("setting prev duration");
             if (typeof (tempMelody[tempMelody.length - 1][1] != Number)) {
               tempMelody[tempMelody.length - 1][1] =
                 Tone.now() - prevNoteStartTime;
@@ -120,14 +120,14 @@ const recordMelody = () => {
           // Create a new noteInfo with a placeholder duration
           tempNoteInfo = [note, "duration"];
 
-          console.log(`${note} at ${currNoteStartTime.toFixed(2)}`);
+          // console.log(`${note} at ${currNoteStartTime.toFixed(2)}`);
           noteOn = true;
           sampler.releaseAll();
           playNote(note);
           tempMelody.push(tempNoteInfo);
           notesRinging.push(note);
 
-          console.log(tempMelody);
+          // console.log(tempMelody);
           return [note, noteOn];
         } else {
           // velocity = 0 still gives a MIDI number of 144
@@ -138,7 +138,7 @@ const recordMelody = () => {
 
           // console.log(note);
           // console.log(`${notesRinging.length}`);
-          console.log(`${note} at ${Tone.now().toFixed(2)}`);
+          // console.log(`${note} at ${Tone.now().toFixed(2)}`);
 
           noteOn = false;
           /* NOT SURE IF I ACTUALLY NEED THIS CODE:*/
@@ -160,14 +160,14 @@ const recordMelody = () => {
               // console.log("No notes are ringing");
               currNoteStartTime = Tone.now();
               // update the CURRENT note duration
-              console.log("setting current duration");
+              // console.log("setting current duration");
               tempMelody[tempMelody.length - 1][1] =
                 Tone.now() - prevNoteStartTime; // now - prevTime = duration
               // add a rest with a duration placeholder
               tempMelody.push(["REST", "duration"]);
             }
           }
-          console.log(tempMelody);
+          // console.log(tempMelody);
           return [note, noteOn];
         }
 
@@ -199,9 +199,9 @@ const playRecordedMelody = () => {
   Uses script.js functions to play the melody stored from recordMelody function
   */
   recTitle.innerHTML = "Melody saved. Playing recording...";
-  console.log("tempmelody = " + tempMelody);
+  // console.log("tempmelody = " + tempMelody);
   if (tempMelody != undefined && tempMelody.length != 0) {
-    console.log("calling playMelody");
+    // console.log("calling playMelody");
     playMelody(tempMelody);
   } else {
     recTitle.innerHTML = "Melody not found. Please record a melody first!";

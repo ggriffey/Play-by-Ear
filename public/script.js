@@ -146,7 +146,7 @@ function playMelody(melody) {
   if (title != undefined) {
     title.textContent = `Play the melody back! Melody starts on ${melody[0][0]} and is in C major!`;
   }
-  console.log("played entire melody");
+  // console.log("played entire melody");
 }
 
 // play a melody from an array of note names (NO durations) (ex. ['C4', 'F4', 'Bb4'])
@@ -183,7 +183,7 @@ const autoMelodyGeneration = () => {
 };
 
 const handleUserResponse = (melody) => {
-  console.log(`handleUserResponse(${melody})`);
+  // console.log(`handleUserResponse(${melody})`);
   let buttons = [sample, random];
   allowPianoUsage();
   let mel = melody.map((note) => note);
